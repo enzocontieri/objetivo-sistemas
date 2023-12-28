@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Produto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #sellButton {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        #sellButton:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="productForm">
+        <label for="nomeDoProduto">Nome do Produto:</label>
+        <input type="text" id="nome" required>
+
+        <label for="PrecoDoProduto">Preço do Produto:</label>
+        <input type="number" id="preco" min="0" step="0.01" required>
+
+        <label for="quantidadeEmEstoque">Quantidade em Estoque:</label>
+        <input type="number" id="quantidade" min="0" required>
+
+        <button type="button" onclick="registrarProduto()">Registrar Produto</button>
+        <button type="button" onclick="venderProduto()">Vendar</button>
+        <div id="message"></div>
+    </form>
+
+    <script>
+        //Envia as informções passadas no botão Registrar Produto
+        function registrarProduto() {
+            var nomeDoProduto = document.getElementById("nome").value;
+            var PrecoDoProduto = document.getElementById("preco").value;
+            var quantidadeEmEstoque = document.getElementById("quantidade").value;
+                fetch('http://localhost:3000/cadastrar-produtos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: nomeDoProduto,
+                    preco: PrecoDoProduto,
+                    quantidade: quantidadeEmEstoque,
+                }),
+            })
+            .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Erro ao registrar produto');
+            }
+        })
+        .then(data => {
+            console.log('Sucesso:', data);
+            displayMessage(data.message); 
+        })
+            .catch((error) => {
+                console.error('Erro:', error);
+            });
+        }
+        //Envia as informções passadas no botão Vender
+        function venderProduto() {
+            var nomeDoProduto = document.getElementById("nome").value;
+            var PrecoDoProduto = document.getElementById("preco").value;
+            var quantidadeEmEstoque = document.getElementById("quantidade").value;
+                fetch('http://localhost:3000/vender-produtos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: nomeDoProduto,
+                    preco: PrecoDoProduto,
+                    quantidade: quantidadeEmEstoque,
+                }),
+            })
+            .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Erro ao vender produto');
+            }
+        })
+        .then(data => {
+            console.log('Sucesso:', data);
+            displayMessage(data.message); 
+        })
+            .catch((error) => {
+                console.error('Erro:', error);
+            });
+        }
+        function displayMessage(message) {
+        var messageElement = document.getElementById('message');
+        messageElement.textContent = message;
+    }
+
+    </script>
+
+</body>
+</html>
